@@ -1,0 +1,10 @@
+.env
+.venv
+venv/
+.venv/
+.idea/
+__pycache__/
+**/__pycache__/
+.vscode
+.test.env
+old_openai_api.txt
