@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message
 from config import MY_TELEGRAM_ID, BOT_TOKEN
-from utils.ocr import extract_text_from_photo
+from utils.ocr import extract_text_with_line_grouping
 from aiogram import Bot
 from utils.gpt import ask_gpt
 
@@ -32,20 +32,23 @@ async def handle_message(message: Message):
             f.write(file.read())
 
         # Обрабатываем OCR
-        text = extract_text_from_photo(local_path)
+        text = extract_text_with_line_grouping(local_path)
+        # print(text)
+
 
         # Удалим временный файл
         os.remove(local_path)
 
         if text:
-            # await message.answer(f"Текст на изображении:\n\n{text}")
+            await message.answer(f"Текст на изображении:\n\n{text}")
 
             gpt_reply = await ask_gpt(text)
             await message.answer(f"🤖 Ответ:\n\n{gpt_reply}")
         else:
             await message.answer("Не удалось распознать текст.")
     else:
-        # await message.answer("Отправлен текст:  " + message.text[:10] + "...")
+        await message.answer("Отправлен текст:  " + message.text[:10] + "...")
         gpt_reply = await ask_gpt(message.text)
         await message.answer(f"🤖 Ответ:\n\n{gpt_reply}")
+        # pass
 
